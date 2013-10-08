@@ -24,6 +24,7 @@ class SuperSocket
     @id = null
     @status = null
     @username = null
+    @room = null
 
   on: (event, callback) -> @listener event, callback
 
