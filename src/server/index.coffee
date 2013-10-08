@@ -1,13 +1,12 @@
 net = require "net"
+fs = require "fs"
 SuperSocket = require "../shared/super_socket"
 
 # currently active rooms
 rooms = {}
 
 # possible room keys/names
-roomKeys = [
-  "a", "b", "c"
-]
+roomKeys = []
 
 Server =
   start: (options) ->
@@ -89,3 +88,19 @@ handleConnection = (socket) ->
       message: data.message
 
     s.write payload for s in room.users when s.id isnt superSocket.id
+
+
+stream = fs.createReadStream "/usr/share/dict/words"
+
+stream.on "data", (data) =>
+  data = data.toString "utf8"
+
+  for word in data.split("\n")
+    if word.search(/'s$/) is -1 and
+        word.search(/[éåö]/) is -1 and
+        word.length > 2 and
+        word.toUpperCase() isnt word
+
+      roomKeys.push word.toLowerCase()
+
+stream.on "end", -> #done
