@@ -1,0 +1,3 @@
+[submodule "vendor/tidy-prompt"]
+	path = vendor/tidy-prompt
+	url = git@github.com:makeusabrew/tidy-prompt.git
