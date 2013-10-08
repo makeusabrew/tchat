@@ -88,12 +88,10 @@ handleConnection = (socket) ->
 
     room = rooms[superSocket.room]
 
-    payload =
+    superSocket.broadcast
       command: "chat"
       user: superSocket.username
       message: data.message
-
-    superSocket.broadcast payload
 
   superSocket.on "status", ->
     console.log "status request from #{superSocket.id}"
