@@ -17,6 +17,9 @@ Client =
 
       if options.room
         # connect to existing room
+        write socket,
+          command: "join room"
+          room: options.room
       else
         # @TODO obviously we'll wrap this properly at some point
 

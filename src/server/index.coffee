@@ -8,9 +8,6 @@ roomKeys = [
   "a", "b", "c"
 ]
 
-# active connections
-connections = []
-
 Server =
   start: (options) ->
     server = net.createServer()
@@ -22,15 +19,44 @@ Server =
     server.on "connection", (socket) ->
       console.log "got connection"
 
-      connections.push socket
+      superSocket = addConnection socket
 
       onCmd = createListener socket
 
-      onCmd "create room", (data) ->
-        console.log "create room"
+      onCmd "create room", ->
+        console.log "create room for socket #{superSocket.id}"
+
+        room = createRandomRoom superSocket
+
+        write socket,
+          command: "message"
+          message: "created new room: #{room.key}"
+
+      onCmd "join room", (data) ->
+        console.log "join room #{data.room} for socket #{superSocket.id}"
+
+        joinRoom data.room, superSocket
 
 
 module.exports = Server
+
+socketId = 0
+connections = {}
+
+addConnection = (socket) ->
+  socketId += 1
+
+  superSocket =
+    # make sure we contain a reference to the underlying connection
+    socket: socket
+    # the rest of this stuff is our domain layer
+    id: socketId
+    status: null
+    username: null
+
+  connections[socketId] = superSocket
+
+  return superSocket
 
 createListener = (socket, listener) ->
   # give this socket a private object of listeners...
@@ -51,3 +77,20 @@ createListener = (socket, listener) ->
   # any amount of listeners on the private object
   return (event, callback) ->
     listeners[event] = callback
+
+createRandomRoom = (socket) ->
+  index = Math.floor(Math.random() * roomKeys.length)
+  key = roomKeys[index]
+  room =
+    users: []
+    key: key
+
+  rooms[key] = room
+
+  joinRoom key, socket
+
+  return room
+
+joinRoom = (key, socket) -> rooms[key].users.push socket
+
+write = (socket, data) -> socket.write JSON.stringify data

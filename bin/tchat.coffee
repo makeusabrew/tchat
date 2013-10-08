@@ -2,4 +2,7 @@
 
 client = require "#{__dirname}/../src/client"
 
-client.start()
+options =
+  room: process.argv[2]
+
+client.start options
