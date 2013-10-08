@@ -56,6 +56,10 @@ handleConnection = (socket) ->
   superSocket = new SuperSocket socket
   addConnection superSocket
 
+  superSocket.on "auth", (data) ->
+    superSocket.username = data.username
+    superSocket.write command: "authed"
+
   superSocket.on "create room", ->
     console.log "create room for socket #{superSocket.id}"
 
@@ -80,7 +84,8 @@ handleConnection = (socket) ->
     room = rooms[superSocket.room]
 
     payload =
-      command: "message"
+      command: "chat"
+      user: superSocket.username
       message: data.message
 
     s.write payload for s in room.users when s.id isnt superSocket.id
