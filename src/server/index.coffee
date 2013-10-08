@@ -1,5 +1,5 @@
 net = require "net"
-Utils = require "../shared/utils"
+SuperSocket = require "../shared/super_socket"
 
 # currently active rooms
 rooms = {}
@@ -20,25 +20,25 @@ Server =
     server.on "connection", (socket) ->
       console.log "got connection"
 
-      superSocket = addConnection socket
+      superSocket = new SuperSocket socket
 
-      onCmd = Utils.createListener socket
+      addConnection superSocket
 
-      onCmd "create room", ->
+      superSocket.on "create room", ->
         console.log "create room for socket #{superSocket.id}"
 
         room = createRandomRoom superSocket
 
-        Utils.write socket,
+        superSocket.write
           command: "message"
           message: "created new room: #{room.key}"
 
-      onCmd "join room", (data) ->
+      superSocket.on "join room", (data) ->
         console.log "join room #{data.room} for socket #{superSocket.id}"
 
         joinRoom data.room, superSocket
 
-        Utils.write socket,
+        superSocket.write
           command: "message"
           message: "joined room: #{data.room}"
 
@@ -51,17 +51,9 @@ connections = {}
 addConnection = (socket) ->
   socketId += 1
 
-  superSocket =
-    # make sure we contain a reference to the underlying connection
-    socket: socket
-    # the rest of this stuff is our domain layer
-    id: socketId
-    status: null
-    username: null
+  socket.id = socketId
 
-  connections[socketId] = superSocket
-
-  return superSocket
+  connections[socketId] = socket
 
 
 createRandomRoom = (socket) ->

@@ -1,6 +1,6 @@
 require "colors"
 net = require "net"
-Utils = require "../shared/utils"
+SuperSocket = require "../shared/super_socket"
 
 username = "test"
 
@@ -11,24 +11,24 @@ Client =
       port: 9400
       host: "localhost"
 
+    superSocket = new SuperSocket socket
+
     socket.on "connect", ->
       console.log "connected OK"
 
       if options.room
         # connect to existing room
-        Utils.write socket,
+        superSocket.write
           command: "join room"
           room: options.room
       else
         # @TODO obviously we'll wrap this properly at some point
 
-        Utils.write socket,
+        superSocket.write
           command: "create room"
           foo: "bar"
 
-    onCmd = Utils.createListener socket
-
-    onCmd "message", (data) ->
+    superSocket.on "message", (data) ->
       console.log data.message
 
     socket.on "error", ->
