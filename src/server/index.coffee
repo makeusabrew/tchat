@@ -1,4 +1,5 @@
 net = require "net"
+Utils = require "../shared/utils"
 
 # currently active rooms
 rooms = {}
@@ -21,14 +22,14 @@ Server =
 
       superSocket = addConnection socket
 
-      onCmd = createListener socket
+      onCmd = Utils.createListener socket
 
       onCmd "create room", ->
         console.log "create room for socket #{superSocket.id}"
 
         room = createRandomRoom superSocket
 
-        write socket,
+        Utils.write socket,
           command: "message"
           message: "created new room: #{room.key}"
 
@@ -36,6 +37,10 @@ Server =
         console.log "join room #{data.room} for socket #{superSocket.id}"
 
         joinRoom data.room, superSocket
+
+        Utils.write socket,
+          command: "message"
+          message: "joined room: #{data.room}"
 
 
 module.exports = Server
@@ -58,25 +63,6 @@ addConnection = (socket) ->
 
   return superSocket
 
-createListener = (socket, listener) ->
-  # give this socket a private object of listeners...
-  listeners = {}
-
-  # bind to the low-level data method and pick out
-  # the actual payload
-  socket.on "data", (data) ->
-    data = JSON.parse data
-    command = data.command
-    delete data.command
-
-    # if this socket has a listener bound for this
-    # command then fire it
-    listeners[command](data) if listeners[command]
-
-  # the returned function simply allows us to put
-  # any amount of listeners on the private object
-  return (event, callback) ->
-    listeners[event] = callback
 
 createRandomRoom = (socket) ->
   index = Math.floor(Math.random() * roomKeys.length)
@@ -87,10 +73,9 @@ createRandomRoom = (socket) ->
 
   rooms[key] = room
 
+  # @TODO return the room we've joined || null?
   joinRoom key, socket
 
   return room
 
 joinRoom = (key, socket) -> rooms[key].users.push socket
-
-write = (socket, data) -> socket.write JSON.stringify data

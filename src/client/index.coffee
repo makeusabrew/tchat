@@ -1,9 +1,8 @@
 require "colors"
 net = require "net"
+Utils = require "../shared/utils"
 
 username = "test"
-
-write = (socket, data) -> socket.write JSON.stringify data
 
 Client =
   start: (options = {}) ->
@@ -17,18 +16,20 @@ Client =
 
       if options.room
         # connect to existing room
-        write socket,
+        Utils.write socket,
           command: "join room"
           room: options.room
       else
         # @TODO obviously we'll wrap this properly at some point
 
-        write socket,
+        Utils.write socket,
           command: "create room"
           foo: "bar"
 
-    socket.on "data", (data) ->
-      console.log data.toString "utf8"
+    onCmd = Utils.createListener socket
+
+    onCmd "message", (data) ->
+      console.log data.message
 
     socket.on "error", ->
       console.log "error"
