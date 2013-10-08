@@ -1,11 +1,12 @@
 require "colors"
 net = require "net"
 SuperSocket = require "../shared/super_socket"
-
-username = "test"
+tp = require "../../vendor/tidy-prompt/src/tidy-prompt"
 
 Client =
   start: (options = {}) ->
+
+    tp.start()
 
     socket = net.connect
       port: 9400
@@ -14,7 +15,6 @@ Client =
     superSocket = new SuperSocket socket
 
     socket.on "connect", ->
-      console.log "connected OK"
 
       if options.room
         # connect to existing room
@@ -29,9 +29,17 @@ Client =
           foo: "bar"
 
     superSocket.on "message", (data) ->
-      console.log data.message
+      tp.log data.message
 
     socket.on "error", ->
-      console.log "error"
+      tp.log "error"
+
+    tp.on "input", (data) ->
+      superSocket.write
+        command: "chat"
+        message: data
 
 module.exports = Client
+
+tp.on "SIGINT", ->
+  process.exit 0

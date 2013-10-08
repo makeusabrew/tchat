@@ -42,6 +42,8 @@ Server =
           command: "message"
           message: "joined room: #{data.room}"
 
+      superSocket.on "chat", (data) ->
+        console.log "chat from #{superSocket.id}: #{data.message}"
 
 module.exports = Server
 
