@@ -89,6 +89,8 @@ handleConnection = (socket) ->
 
     s.write payload for s in room.users when s.id isnt superSocket.id
 
+  superSocket.on "status", ->
+    console.log "status request from #{superSocket.id}"
 
 stream = fs.createReadStream "/usr/share/dict/words"
 

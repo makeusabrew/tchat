@@ -48,12 +48,19 @@ Client =
     superSocket.on "chat", (data) ->
       tp.log "#{data.user}: #{data.message}"
 
-    tp.on "input", (data) ->
-      superSocket.write
-        command: "chat"
-        message: data
+    tp.on "input", handleInput superSocket
 
 module.exports = Client
 
 tp.on "SIGINT", ->
   process.exit 0
+
+handleInput = (socket) ->
+  return (data) ->
+    switch data
+      when "/status"
+        socket.write command: "status"
+      else
+        socket.write
+          command: "chat"
+          message: data
