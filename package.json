@@ -1,0 +1,22 @@
+{
+  "name": "tchat",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/makeusabrew/tchat.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "gitHead": "b1d994966f18c5b4f106ebaebb1eb9a8b6f0a15f",
+  "bugs": {
+    "url": "https://github.com/makeusabrew/tchat/issues"
+  },
+  "dependencies": {
+    "colors": "~0.6.2"
+  }
+}
