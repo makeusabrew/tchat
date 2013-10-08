@@ -3,18 +3,31 @@ net = require "net"
 
 username = "test"
 
+write = (socket, data) -> socket.write JSON.stringify data
+
 Client =
-  start: ->
-    options =
+  start: (options = {}) ->
+
+    socket = net.connect
       port: 9400
       host: "localhost"
 
-    connection = net.connect options
-
-    connection.on "connect", ->
+    socket.on "connect", ->
       console.log "connected OK"
 
-    connection.on "error", ->
+      if options.room
+        # connect to existing room
+      else
+        # @TODO obviously we'll wrap this properly at some point
+
+        write socket,
+          command: "create room"
+          foo: "bar"
+
+    socket.on "data", (data) ->
+      console.log data.toString "utf8"
+
+    socket.on "error", ->
       console.log "error"
 
 module.exports = Client
