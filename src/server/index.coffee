@@ -46,8 +46,10 @@ createRandomRoom = (socket) ->
   return room
 
 joinRoom = (key, socket) ->
-  rooms[key].users.push socket
-  socket.room = key
+  room = rooms[key]
+  room.users.push socket
+
+  socket.room = room
 
 handleConnection = (socket) ->
   console.log "got connection"
@@ -77,6 +79,10 @@ handleConnection = (socket) ->
       command: "message"
       message: "joined room: #{data.room}"
 
+    superSocket.broadcast
+      command: "message"
+      message: "#{superSocket.username} joined the room"
+
   superSocket.on "chat", (data) ->
     console.log "chat from #{superSocket.id}: #{data.message}"
 
@@ -87,7 +93,7 @@ handleConnection = (socket) ->
       user: superSocket.username
       message: data.message
 
-    s.write payload for s in room.users when s.id isnt superSocket.id
+    superSocket.broadcast payload
 
   superSocket.on "status", ->
     console.log "status request from #{superSocket.id}"

@@ -30,4 +30,6 @@ class SuperSocket
 
   write: (data) -> @socket.write JSON.stringify data
 
+  broadcast: (data) -> s.write data for s in @room.users when s.id isnt @id
+
 module.exports = SuperSocket
