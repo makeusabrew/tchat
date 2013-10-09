@@ -31,6 +31,20 @@ Joined room: "rechargeable"
 
 Once launched, CTRL+C exits.
 
+### First run
+
+The first time tchat is run it will prompt you for a username which will subsequently be
+saved in a JSON configuration file at ```~/.tchat.coffee```:
+
+```
+nick@dev:~$ tchat
+Please enter a username (you only have to do this once):
+<= makeusabrew
+Username saved to /home/nick/.tchat
+You can edit this file to alter various preferences
+Connecting as makeusabrew
+```
+
 ## Notes
 
 There will **eventually** be a public tchat server once the code has stabilised a bit. In practice,
