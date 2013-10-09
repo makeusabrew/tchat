@@ -8,12 +8,26 @@ Terminal based, hassle free chat.
 
 ## Usage
 
-```tchat``` - connects to the tchat server and creates a new randomly named room
+```tchat``` - connects to the tchat server and creates a new randomly named room:
+
+```
+nick@dev:~$ tchat
+Connecting as makeusabrew
+Created new room: "rechargeable"
+=> hello world!
+```
 
 ```tchat [room]``` - connects to the tchat server and joins the named room. Note
 that the room must already exist; at present the only way to create a room is
 to let the server randomly assign you one which can then be shared with other
 participants.
+
+```
+nick@dev:~$ tchat rechargeable
+Connecting as makeusabrew
+Joined room: "rechargeable"
+=> 
+```
 
 Once launched, CTRL+C exits.
 
