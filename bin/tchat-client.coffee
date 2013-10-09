@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 
-client = require "#{__dirname}/../src/client"
+client = require "#{__dirname}/../index"
 
 options =
   room: process.argv[2]

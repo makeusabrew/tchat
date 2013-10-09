@@ -1,3 +1,4 @@
 src
 lib/server
+bin/*.coffee
 Gruntfile.coffee

@@ -2,7 +2,7 @@ require "colors"
 net         = require "net"
 fs          = require "fs"
 SuperSocket = require "../shared/super_socket"
-tp          = require "../../vendor/tidy-prompt/src/tidy-prompt"
+tp          = require "../../vendor/tidy-prompt"
 config      = require "../shared/config"
 
 configFile = "#{process.env.HOME}/.tchat"

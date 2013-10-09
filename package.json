@@ -9,7 +9,7 @@
     "prepublish": "grunt"
   },
   "bin": {
-      "tchat": "./bin/tchat-client"
+      "tchat": "./bin/tchat-client.js"
   },
   "repository": {
     "type": "git",
