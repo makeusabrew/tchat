@@ -31,6 +31,14 @@ Joined room: "rechargeable"
 
 Once launched, CTRL+C exits.
 
+## Notes
+
+There will **eventually** be a public tchat server once the code has stabilised a bit. In practice,
+the above commands will fail to connect unless you're running the server process *yourself*
+(```./bin/tchat-server.coffee```) on the same host as the client. You can override the ```host```
+key by manually adding it in your JSON ```~/.tchat``` config file for privately networked chat
+rooms in the meantime.
+
 ## License
 
 (The MIT License)
