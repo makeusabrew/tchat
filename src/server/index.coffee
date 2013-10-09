@@ -1,6 +1,7 @@
 net         = require "net"
 fs          = require "fs"
 SuperSocket = require "../shared/super_socket"
+config      = require "../shared/config"
 
 # currently active rooms
 rooms = {}
@@ -9,10 +10,10 @@ Server =
   start: (options) ->
     populateRoomKeys()
     server = net.createServer()
-    server.listen 9400
+    server.listen config.port
 
     server.on "listening", ->
-      console.log "server listening"
+      console.log "server listening", server.address()
 
     server.on "connection", handleConnection
 

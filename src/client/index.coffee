@@ -3,9 +3,12 @@ net         = require "net"
 fs          = require "fs"
 SuperSocket = require "../shared/super_socket"
 tp          = require "../../vendor/tidy-prompt/src/tidy-prompt"
+config      = require "../shared/config"
 
 configFile = "#{process.env.HOME}/.tchat"
-config = if fs.existsSync configFile then JSON.parse fs.readFileSync configFile else {}
+userConfig = if fs.existsSync configFile then JSON.parse fs.readFileSync configFile else {}
+
+config[k] = v for k,v of userConfig
 
 connect = (options) ->
 
@@ -14,8 +17,8 @@ connect = (options) ->
   tp.log "Connecting as #{config.username}"
 
   socket = net.connect
-    port: 9400
-    host: "localhost"
+    port: config.port
+    host: config.server
 
   # upgrade to our wrapper object which exposes a lot
   # of convenience methods
