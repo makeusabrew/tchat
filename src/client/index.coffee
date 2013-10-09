@@ -55,6 +55,9 @@ connect = (options) ->
   superSocket.on "chat", (data) ->
     tp.log "#{data.user}: #{data.message}"
 
+  superSocket.on "leave", (data) ->
+    tp.log "#{data.user} left the room"
+
   #
   # user input handlers
   #

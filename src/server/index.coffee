@@ -32,22 +32,21 @@ addConnection = (socket) ->
 createRandomRoom = (socket) ->
   index = Math.floor(Math.random() * roomKeys.length)
   key = roomKeys[index]
+
+  createRandomRoom socket if rooms[key] and rooms[key].users.length
+
   room =
     users: []
     key: key
 
-  # @TODO check room not in use
   rooms[key] = room
 
-  # @TODO return the room we've joined || null?
   joinRoom key, socket
-
-  return room
 
 joinRoom = (key, socket) ->
   room = rooms[key]
 
-  # @TODO handle invalid room
+  return null if not room
 
   room.users.push socket
 
@@ -65,9 +64,14 @@ handleConnection = (socket) ->
   #
   socket.on "end", ->
     console.log "socket #{identifier} went away"
-    users = superSocket.room.users
 
-    users.splice key, 1 for user, key in users when user.id is superSocket.id
+    return if not superSocket.room
+
+    superSocket.broadcast "leave", user: superSocket.username
+
+    room = superSocket.room
+
+    room.users = (user for user in room.users when user.id isnt superSocket.id)
 
   #
   # augmented socket handlers
@@ -89,14 +93,15 @@ handleConnection = (socket) ->
   superSocket.on "join room", (data) ->
     console.log "join room #{data.room} for socket #{identifier}"
 
-    joinRoom data.room, superSocket
+    room = joinRoom data.room, superSocket
 
-    superSocket.write "message", message: "Joined room: \"#{data.room}\""
+    message = if room then "Joined room: \"#{data.room}\"" else "Could not join room \"#{data.room}\" - please try again"
+    superSocket.write "message", message: message
 
-    superSocket.broadcast "message", message: "#{superSocket.username} joined the room"
+    superSocket.broadcast "message", message: "#{superSocket.username} joined the room" if room
 
   superSocket.on "chat", (data) ->
-    console.log "chat from #{identifier} -> #{data.message}"
+    console.log "chat from #{identifier} -> #{superSocket.room.key}: #{data.message}"
 
     room = rooms[superSocket.room]
 
