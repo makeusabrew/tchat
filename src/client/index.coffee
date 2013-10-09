@@ -7,9 +7,11 @@ tp          = require "../../vendor/tidy-prompt/src/tidy-prompt"
 configFile = "#{process.env.HOME}/.tchat"
 config = if fs.existsSync configFile then JSON.parse fs.readFileSync configFile else {}
 
-connect = (config, options) ->
+connect = (options) ->
 
   tp.setInPrompt "#{config.username}: "
+
+  tp.log "Connecting as #{config.username}"
 
   socket = net.connect
     port: 9400
@@ -23,7 +25,12 @@ connect = (config, options) ->
   # base socket handlers
   #
   socket.on "error", ->
-    tp.log "error"
+    tp.log "error connecting to server"
+    process.exit 0
+
+  socket.on "end", ->
+    tp.log "server went away"
+    process.exit 0
 
   socket.on "connect", ->
 
@@ -70,9 +77,9 @@ Client =
         tp.log "Username saved to #{configFile}"
         tp.log "You can edit this file to alter various preferences"
 
-        connect config, options
+        connect options
     else
-      connect config, options
+      connect options
 
 module.exports = Client
 
