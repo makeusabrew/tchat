@@ -6,12 +6,12 @@ createListener = (socket) ->
   # the actual payload
   socket.on "data", (data) ->
     data = JSON.parse data
-    command = data.command
-    delete data.command
+    event = data.event
+    delete data.event
 
     # if this socket has a listener bound for this
-    # command then fire it
-    listeners[command](data) if listeners[command]
+    # event then fire it
+    listeners[event](data) if listeners[event]
 
   # the returned function simply allows us to put
   # any amount of listeners on the private object
@@ -28,8 +28,10 @@ class SuperSocket
 
   on: (event, callback) -> @listener event, callback
 
-  write: (data) -> @socket.write JSON.stringify data
+  write: (event, data = {}) ->
+    data.event = event
+    @socket.write JSON.stringify data
 
-  broadcast: (data) -> s.write data for s in @room.users when s.id isnt @id
+  broadcast: (event, data) -> s.write event, data for s in @room.users when s.id isnt @id
 
 module.exports = SuperSocket

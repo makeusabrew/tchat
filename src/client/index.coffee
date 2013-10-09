@@ -31,9 +31,7 @@ Client =
       # bear in mind this is just the initial TCP connection
       # so the first thing we want to do is register our user
 
-      superSocket.write
-        command: "auth"
-        username: config.username
+      superSocket.write "auth", username: config.username
 
     #
     # augmented socket handlers
@@ -41,16 +39,9 @@ Client =
     superSocket.on "authed", ->
 
       if options.room
-        # connect to existing room
-        superSocket.write
-          command: "join room"
-          room: options.room
+        superSocket.write "join room", room: options.room
       else
-        # @TODO obviously we'll wrap this properly at some point
-
-        superSocket.write
-          command: "create room"
-          foo: "bar"
+        superSocket.write "create room"
 
     superSocket.on "message", (data) ->
       tp.log data.message
@@ -72,8 +63,6 @@ handleInput = (socket) ->
   return (data) ->
     switch data
       when "/status"
-        socket.write command: "status"
+        socket.write "status"
       else
-        socket.write
-          command: "chat"
-          message: data
+        socket.write "chat", message: data

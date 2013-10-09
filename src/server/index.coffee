@@ -58,37 +58,30 @@ handleConnection = (socket) ->
 
   superSocket.on "auth", (data) ->
     superSocket.username = data.username
-    superSocket.write command: "authed"
+    superSocket.write "authed"
 
   superSocket.on "create room", ->
     console.log "create room for socket #{superSocket.id}"
 
     room = createRandomRoom superSocket
 
-    superSocket.write
-      command: "message"
-      message: "created new room: #{room.key}"
+    superSocket.write "message", message: "created new room: #{room.key}"
 
   superSocket.on "join room", (data) ->
     console.log "join room #{data.room} for socket #{superSocket.id}"
 
     joinRoom data.room, superSocket
 
-    superSocket.write
-      command: "message"
-      message: "joined room: #{data.room}"
+    superSocket.write "message", message: "joined room: #{data.room}"
 
-    superSocket.broadcast
-      command: "message"
-      message: "#{superSocket.username} joined the room"
+    superSocket.broadcast "message", message: "#{superSocket.username} joined the room"
 
   superSocket.on "chat", (data) ->
     console.log "chat from #{superSocket.id}: #{data.message}"
 
     room = rooms[superSocket.room]
 
-    superSocket.broadcast
-      command: "chat"
+    superSocket.broadcast "chat",
       user: superSocket.username
       message: data.message
 
