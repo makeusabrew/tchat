@@ -1,7 +1,6 @@
 # tchat
 
-
-Terminal based, hassle free chat
+Terminal based, hassle free chat.
 
 ## Installation
 
