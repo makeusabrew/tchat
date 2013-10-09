@@ -118,7 +118,7 @@ populateRoomKeys = (done = ->) ->
     for word in data.split("\n")
       if word.search(/'s$/) is -1 and
           word.search(/[éåö]/) is -1 and
-          word.length > 2 and
+          word.length > 4 and
           word.toUpperCase() isnt word
 
         roomKeys.push word.toLowerCase()
