@@ -65,6 +65,9 @@ handleConnection = (socket) ->
   #
   socket.on "end", ->
     console.log "socket #{identifier} went away"
+    users = superSocket.room.users
+
+    users.splice key, 1 for user, key in users when user.id is superSocket.id
 
   #
   # augmented socket handlers
@@ -81,14 +84,14 @@ handleConnection = (socket) ->
 
     room = createRandomRoom superSocket
 
-    superSocket.write "message", message: "created new room: #{room.key}"
+    superSocket.write "message", message: "Created new room: \"#{room.key}\""
 
   superSocket.on "join room", (data) ->
     console.log "join room #{data.room} for socket #{identifier}"
 
     joinRoom data.room, superSocket
 
-    superSocket.write "message", message: "joined room: #{data.room}"
+    superSocket.write "message", message: "Joined room: \"#{data.room}\""
 
     superSocket.broadcast "message", message: "#{superSocket.username} joined the room"
 
