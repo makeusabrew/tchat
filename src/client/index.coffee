@@ -1,10 +1,11 @@
 require "colors"
-net = require "net"
-fs = require "fs"
+net         = require "net"
+fs          = require "fs"
 SuperSocket = require "../shared/super_socket"
-tp = require "../../vendor/tidy-prompt/src/tidy-prompt"
+tp          = require "../../vendor/tidy-prompt/src/tidy-prompt"
 
-config = JSON.parse fs.readFileSync "#{process.env.HOME}/.tchat"
+configFile = "#{process.env.HOME}/.tchat"
+config = if fs.existsSync configFile then JSON.parse fs.readFileSync configFile else {}
 
 Client =
   start: (options = {}) ->
@@ -15,19 +16,28 @@ Client =
       port: 9400
       host: "localhost"
 
+    # upgrade to our wrapper object which exposes a lot
+    # of convenience methods
     superSocket = new SuperSocket socket
 
+    #
+    # base socket handlers
+    #
     socket.on "error", ->
       tp.log "error"
 
     socket.on "connect", ->
 
       # bear in mind this is just the initial TCP connection
+      # so the first thing we want to do is register our user
 
       superSocket.write
         command: "auth"
         username: config.username
 
+    #
+    # augmented socket handlers
+    #
     superSocket.on "authed", ->
 
       if options.room
@@ -48,12 +58,15 @@ Client =
     superSocket.on "chat", (data) ->
       tp.log "#{data.user}: #{data.message}"
 
+    #
+    # user input handlers
+    #
     tp.on "input", handleInput superSocket
 
-module.exports = Client
+    tp.on "SIGINT", ->
+      process.exit 0
 
-tp.on "SIGINT", ->
-  process.exit 0
+module.exports = Client
 
 handleInput = (socket) ->
   return (data) ->

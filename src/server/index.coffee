@@ -5,11 +5,9 @@ SuperSocket = require "../shared/super_socket"
 # currently active rooms
 rooms = {}
 
-# possible room keys/names
-roomKeys = []
-
 Server =
   start: (options) ->
+    populateRoomKeys()
     server = net.createServer()
     server.listen 9400
 
@@ -38,6 +36,7 @@ createRandomRoom = (socket) ->
     users: []
     key: key
 
+  # @TODO check room not in use
   rooms[key] = room
 
   # @TODO return the room we've joined || null?
@@ -96,17 +95,20 @@ handleConnection = (socket) ->
   superSocket.on "status", ->
     console.log "status request from #{superSocket.id}"
 
-stream = fs.createReadStream "/usr/share/dict/words"
+# possible room keys/names
+roomKeys = []
+populateRoomKeys = (done = ->) ->
+  stream = fs.createReadStream "/usr/share/dict/words"
 
-stream.on "data", (data) =>
-  data = data.toString "utf8"
+  stream.on "data", (data) =>
+    data = data.toString "utf8"
 
-  for word in data.split("\n")
-    if word.search(/'s$/) is -1 and
-        word.search(/[éåö]/) is -1 and
-        word.length > 2 and
-        word.toUpperCase() isnt word
+    for word in data.split("\n")
+      if word.search(/'s$/) is -1 and
+          word.search(/[éåö]/) is -1 and
+          word.length > 2 and
+          word.toUpperCase() isnt word
 
-      roomKeys.push word.toLowerCase()
+        roomKeys.push word.toLowerCase()
 
-stream.on "end", -> #done
+  stream.on "end", done
