@@ -24,10 +24,11 @@ connections = {}
 addConnection = (socket) ->
   socketId += 1
 
-  socket.id = socketId
+  superSocket = new SuperSocket socket
 
-  connections[socketId] = socket
+  superSocket.id = socketId
 
+  connections[socketId] = superSocket
 
 createRandomRoom = (socket) ->
   index = Math.floor(Math.random() * roomKeys.length)
@@ -53,8 +54,7 @@ joinRoom = (key, socket) ->
 handleConnection = (socket) ->
   console.log "got connection"
 
-  superSocket = new SuperSocket socket
-  addConnection superSocket
+  superSocket = addConnection socket
 
   superSocket.on "auth", (data) ->
     superSocket.username = data.username
