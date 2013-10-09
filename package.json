@@ -9,7 +9,7 @@
     "prepublish": "grunt"
   },
   "bin": {
-      "tchat": "./bin/tchat-client.js"
+    "tchat": "./bin/tchat-client.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,8 @@
     "url": "https://github.com/makeusabrew/tchat/issues"
   },
   "dependencies": {
-    "colors": "~0.6.2"
+    "colors": "~0.6.2",
+    "tidy-prompt": "0.0.1"
   },
   "devDependencies": {
     "grunt": "~0.4.1"
