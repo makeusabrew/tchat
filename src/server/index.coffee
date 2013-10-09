@@ -1,5 +1,5 @@
-net = require "net"
-fs = require "fs"
+net         = require "net"
+fs          = require "fs"
 SuperSocket = require "../shared/super_socket"
 
 # currently active rooms
@@ -56,6 +56,9 @@ handleConnection = (socket) ->
 
   superSocket = addConnection socket
 
+  #
+  # augmented socket handlers
+  #
   superSocket.on "auth", (data) ->
     superSocket.username = data.username
     superSocket.write "authed"
