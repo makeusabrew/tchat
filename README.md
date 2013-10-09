@@ -10,7 +10,10 @@ Terminal based, hassle free chat.
 
 ```tchat``` - connects to the tchat server and creates a new randomly named room
 
-```tchat [room]``` - connects to the tchat server and joins the named room
+```tchat [room]``` - connects to the tchat server and joins the named room. Note
+that the room must already exist; at present the only way to create a room is
+to let the server randomly assign you one which can then be shared with other
+participants.
 
 Once launched, CTRL+C exits.
 
