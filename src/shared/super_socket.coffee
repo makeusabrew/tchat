@@ -5,7 +5,10 @@ createListener = (socket) ->
   # bind to the low-level data method and pick out
   # the actual payload
   socket.on "data", (data) ->
-    data = JSON.parse data
+    try
+      data = JSON.parse data
+    catch
+      return
     event = data.event
     delete data.event
 
