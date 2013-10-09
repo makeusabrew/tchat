@@ -9,6 +9,8 @@ config = if fs.existsSync configFile then JSON.parse fs.readFileSync configFile 
 
 connect = (config, options) ->
 
+  tp.setInPrompt "#{config.username}: "
+
   socket = net.connect
     port: 9400
     host: "localhost"

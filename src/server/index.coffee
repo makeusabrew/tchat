@@ -19,7 +19,6 @@ Server =
 module.exports = Server
 
 socketId = 0
-connections = {}
 
 addConnection = (socket) ->
   socketId += 1
@@ -28,7 +27,7 @@ addConnection = (socket) ->
 
   superSocket.id = socketId
 
-  connections[socketId] = superSocket
+  return superSocket
 
 createRandomRoom = (socket) ->
   index = Math.floor(Math.random() * roomKeys.length)
@@ -47,6 +46,9 @@ createRandomRoom = (socket) ->
 
 joinRoom = (key, socket) ->
   room = rooms[key]
+
+  # @TODO handle invalid room
+
   room.users.push socket
 
   socket.room = room
@@ -56,22 +58,33 @@ handleConnection = (socket) ->
 
   superSocket = addConnection socket
 
+  identifier = superSocket.id
+
+  #
+  # base socket handlers
+  #
+  socket.on "end", ->
+    console.log "socket #{identifier} went away"
+
   #
   # augmented socket handlers
   #
   superSocket.on "auth", (data) ->
+    console.log "socket #{superSocket.id} authed as #{data.username}"
     superSocket.username = data.username
+    identifier += ":#{superSocket.username}"
+
     superSocket.write "authed"
 
   superSocket.on "create room", ->
-    console.log "create room for socket #{superSocket.id}"
+    console.log "create room for socket #{identifier}"
 
     room = createRandomRoom superSocket
 
     superSocket.write "message", message: "created new room: #{room.key}"
 
   superSocket.on "join room", (data) ->
-    console.log "join room #{data.room} for socket #{superSocket.id}"
+    console.log "join room #{data.room} for socket #{identifier}"
 
     joinRoom data.room, superSocket
 
@@ -80,7 +93,7 @@ handleConnection = (socket) ->
     superSocket.broadcast "message", message: "#{superSocket.username} joined the room"
 
   superSocket.on "chat", (data) ->
-    console.log "chat from #{superSocket.id}: #{data.message}"
+    console.log "chat from #{identifier} -> #{data.message}"
 
     room = rooms[superSocket.room]
 
@@ -89,7 +102,7 @@ handleConnection = (socket) ->
       message: data.message
 
   superSocket.on "status", ->
-    console.log "status request from #{superSocket.id}"
+    console.log "status request from #{identifier}"
 
 # possible room keys/names
 roomKeys = []
