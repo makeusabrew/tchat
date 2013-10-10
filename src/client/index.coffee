@@ -2,7 +2,7 @@ require "colors"
 net         = require "net"
 fs          = require "fs"
 SuperSocket = require "../shared/super_socket"
-tp          = require "tidy-prompt"
+tp          = if process.env.NODE_ENV isnt "build" then require "tidy-prompt" else require "#{__dirname}/../../../tidy-prompt/index.coffee"
 config      = require "../shared/config"
 
 configFile = "#{process.env.HOME}/.tchat"
