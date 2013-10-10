@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "colors": "~0.6.2",
-    "tidy-prompt": "0.0.1"
+    "tidy-prompt": "0.0.2"
   },
   "devDependencies": {
     "grunt": "~0.4.1"
