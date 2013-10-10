@@ -14,7 +14,7 @@ connect = (options) ->
 
   tp.setInPrompt "#{config.username}: "
 
-  tp.log "Connecting to #{config.host}:#{config.port} as #{config.username}"
+  tp.log "Connecting to #{config.host}:#{config.port}... "
 
   socket = net.connect
     port: config.port
@@ -40,6 +40,8 @@ connect = (options) ->
     # bear in mind this is just the initial TCP connection
     # so the first thing we want to do is register our user
 
+    tp.log "Authenticating as #{config.username}..."
+
     superSocket.write "auth", username: config.username
 
   #
@@ -64,7 +66,16 @@ connect = (options) ->
   #
   # user input handlers
   #
-  tp.on "input", handleInput superSocket
+  tp.on "data", (char, next) -> next char
+
+  tp.on "input", (data, fulfil) ->
+    switch data
+      when "/status"
+        superSocket.write "status"
+        tp.clearLine()
+      else
+        superSocket.write "chat", message: data
+        fulfil data
 
   tp.on "SIGINT", ->
     process.exit 0
@@ -72,7 +83,8 @@ connect = (options) ->
 Client =
   start: (options = {}) ->
 
-    tp.start()
+    tp.start
+      trapLine: true
 
     if not config.username
       tp.prompt "Please enter a username (you only have to do this once):", (username) ->
@@ -88,11 +100,3 @@ Client =
       connect options
 
 module.exports = Client
-
-handleInput = (socket) ->
-  return (data) ->
-    switch data
-      when "/status"
-        socket.write "status"
-      else
-        socket.write "chat", message: data
