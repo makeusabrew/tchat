@@ -1,4 +1,4 @@
-mode = if process.env.NODE_ENV then process.env.NODE_ENV else "build"
+mode = if process.env.NODE_ENV then process.env.NODE_ENV else "production"
 
 try
   config = require "./#{mode}"

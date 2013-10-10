@@ -1,3 +1,3 @@
 module.exports =
   host: "localhost"
-  port: 9400
+  port: 8400
