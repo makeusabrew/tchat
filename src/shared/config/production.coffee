@@ -1,3 +1,3 @@
 module.exports =
-  host: "tchat.paynedigital.com"
+  host: "tchat.me.uk"
   port: 9400
