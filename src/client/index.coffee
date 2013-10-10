@@ -14,7 +14,7 @@ connect = (options) ->
 
   tp.setInPrompt "#{config.username}: "
 
-  tp.log "Connecting as #{config.username}"
+  tp.log "Connecting to #{config.host}:#{config.port} as #{config.username}"
 
   socket = net.connect
     port: config.port
