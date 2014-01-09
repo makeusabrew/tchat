@@ -34,7 +34,7 @@ Once launched, CTRL+C exits.
 ### First run
 
 The first time tchat is run it will prompt you for a username which will subsequently be
-saved in a JSON configuration file at ```~/.tchat.coffee```:
+saved in a JSON configuration file at ```~/.tchat```:
 
 ```
 nick@dev:~$ tchat
