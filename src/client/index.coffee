@@ -18,7 +18,7 @@ connect = (options) ->
 
   socket = net.connect
     port: config.port
-    host: config.server
+    host: config.host
 
   # upgrade to our wrapper object which exposes a lot
   # of convenience methods
